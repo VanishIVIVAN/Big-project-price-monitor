@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Помилка</h1>
+<p>{{ message }}</p>
+<p><a href="{{ url_for('web.index') }}">Повернутися до пошуку</a></p>
+{% endblock %}

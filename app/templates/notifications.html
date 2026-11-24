@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Сповіщення{% endblock %}
+{% block content %}
+<h1>Сповіщення</h1>
+{% if items %}
+  {% if unread %}<form method="post" action="{{ url_for('web.read_notifications') }}"><button class="secondary">Позначити прочитаними</button></form>{% endif %}
+  <ul class="plain-list">
+  {% for n in items %}
+    <li class="{{ '' if n.is_read else 'unread' }}">
+      <a href="{{ url_for('web.product', product_id=n.product_id) }}">{{ n.message }}</a>
+      <br><small>{{ n.created_at|localtime }}</small>
+    </li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>Сповіщень поки немає. Додайте товар у бажане, і ми напишемо, коли ціна знизиться.</p>
+{% endif %}
+{% endblock %}

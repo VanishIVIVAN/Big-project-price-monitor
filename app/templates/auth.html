@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Реєстрація' if mode == 'register' else 'Вхід' }}{% endblock %}
+{% block content %}
+<h1>{{ 'Реєстрація' if mode == 'register' else 'Вхід' }}</h1>
+<form method="post" class="stack">
+  <label>Ім'я користувача <input name="username" required autocomplete="username"></label>
+  <label>Пароль <input type="password" name="password" required autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}"></label>
+  {% if mode == 'register' %}
+  <label>Пошта для сповіщень (необов'язково) <input type="email" name="email" autocomplete="email"></label>
+  {% endif %}
+  <p><button>{{ 'Зареєструватися' if mode == 'register' else 'Увійти' }}</button></p>
+</form>
+{% endblock %}

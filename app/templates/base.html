@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ціни на електроніку{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <a class="brand" href="{{ url_for('web.index') }}">Ціни на електроніку</a>
+  <nav>
+    <a href="{{ url_for('web.index') }}">Пошук</a>
+    {% if user %}
+      <a href="{{ url_for('web.wishlist') }}">Бажане</a>
+      <a href="{{ url_for('web.notifications') }}">Сповіщення{% if unread %} ({{ unread }}){% endif %}</a>
+      <form method="post" action="{{ url_for('web.logout') }}"><button class="plain">Вийти ({{ user.username }})</button></form>
+    {% else %}
+      <a href="{{ url_for('web.login') }}">Увійти</a>
+      <a href="{{ url_for('web.register') }}">Реєстрація</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  {% for message in get_flashed_messages() %}<p class="notice" role="status">{{ message }}</p>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

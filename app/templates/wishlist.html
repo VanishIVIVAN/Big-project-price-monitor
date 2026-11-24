@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Бажане{% endblock %}
+{% block content %}
+<h1>Бажане</h1>
+{% if items %}
+<div class="scroll">
+<table>
+  <thead><tr><th>Модель</th><th>Найнижча ціна</th><th>Магазинів</th></tr></thead>
+  <tbody>
+  {% for i in items %}
+    <tr>
+      <td><a href="{{ url_for('web.product', product_id=i.product.id) }}">{{ i.product.title }}</a></td>
+      <td class="num">{{ i.min_price|money }}</td>
+      <td class="num">{{ i.store_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p>Ціни цих товарів перевіряються автоматично. Коли в якомусь магазині ціна впаде, ви отримаєте сповіщення.</p>
+{% else %}
+<p>Список порожній. <a href="{{ url_for('web.index') }}">Знайдіть товар</a> і додайте його в бажане.</p>
+{% endif %}
+{% endblock %}

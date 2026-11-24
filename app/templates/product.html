@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block content %}
+<h1>{{ product.title }}</h1>
+<p>{{ category.title if category }}, {{ product.brand }}</p>
+
+<div class="actions">
+  <form method="post" action="{{ url_for('web.toggle_wish', product_id=product.id) }}">
+    <button>{{ 'Прибрати з бажаного' if wished else 'Додати в бажане' }}</button>
+  </form>
+  <form method="post" action="{{ url_for('web.refresh', product_id=product.id) }}">
+    <button class="secondary">Оновити ціни</button>
+  </form>
+</div>
+
+<h2>Де купити</h2>
+{% if best %}<p>Найнижча ціна: {{ cheapest|money }}, {{ best.store_name }}.</p>{% endif %}
+<div class="scroll">
+<table>
+  <thead><tr><th>Магазин</th><th>Ціна</th><th>Була</th><th>Знижка</th><th>Наявність</th><th>Оновлено</th><th></th></tr></thead>
+  <tbody>
+  {% for o in offers %}
+    <tr>
+      <td>{{ o.store_name }}</td>
+      <td class="num">{{ o.price|money }}</td>
+      <td class="num">{{ o.old_price|money if o.old_price and o.old_price > o.price else '—' }}</td>
+      <td class="num">{% if o.old_price and o.old_price > o.price %}−{{ ((o.old_price - o.price) * 100 / o.old_price)|round|int }}%{% else %}—{% endif %}</td>
+      <td>{{ 'є' if o.in_stock else 'немає' }}</td>
+      <td>{{ o.updated_at|localtime }}</td>
+      <td><a href="{{ o.url }}" rel="noopener" target="_blank">Відкрити в магазині</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>Динаміка цін</h2>
+{% if chart %}
+  {{ chart }}
+  {% if points < 3 %}
+  <p>Магазини не віддають історію цін, тому вона накопичується з першого перегляду. Натискайте «Оновити ціни» або додайте товар у бажане — тоді ціни перевірятимуться автоматично.</p>
+  {% endif %}
+{% else %}
+  <p>Даних про ціни поки немає.</p>
+{% endif %}
+{% endblock %}

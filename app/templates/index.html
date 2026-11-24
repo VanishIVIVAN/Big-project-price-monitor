@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Знайти товар</h1>
+<form method="get" class="stack">
+  <label>Категорія
+    <select name="category">
+      {% for c in CATEGORIES.values() %}<option value="{{ c.id }}" {{ 'selected' if c.id == category }}>{{ c.title }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Назва або модель
+    <input name="q" value="{{ q }}" maxlength="80" placeholder="Наприклад, Lenovo IdeaPad">
+  </label>
+  {% if searched %}
+  <fieldset>
+    <legend>Фільтри</legend>
+    <label>Бренд
+      <select name="brand">
+        <option value="">Усі</option>
+        {% for b in brands %}<option {{ 'selected' if args.get('brand') == b }}>{{ b }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Ціна від, ₴ <input name="min_price" inputmode="numeric" value="{{ args.get('min_price', '') }}"></label>
+    <label>Ціна до, ₴ <input name="max_price" inputmode="numeric" value="{{ args.get('max_price', '') }}"></label>
+    <label>Характеристики через кому
+      <input name="keywords" value="{{ args.get('keywords', '') }}" placeholder="16 гб, oled, 15.6">
+    </label>
+    <label class="check"><input type="checkbox" name="only_in_stock" value="1" {{ 'checked' if args.get('only_in_stock') == '1' }}> Лише в наявності</label>
+  </fieldset>
+  {% endif %}
+  <p><button>Шукати</button></p>
+</form>
+
+{% if searched %}
+  {% if errors %}
+  <div class="notice">
+    <p>Не вдалося отримати дані з магазинів:</p>
+    <ul>{% for name, problem in errors.items() %}<li>{{ name }}: {{ problem }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% if groups %}
+    <p>Знайдено моделей: {{ total }}. Показано: {{ groups|length }}.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Модель</th><th>Бренд</th><th>Від</th><th>Магазинів</th></tr></thead>
+      <tbody>
+      {% for g in groups %}
+        <tr>
+          <td><a href="{{ url_for('web.product', product_id=g.product_id) }}">{{ g.title }}</a></td>
+          <td>{{ g.brand }}</td>
+          <td class="num">{{ g.min_price|money }}</td>
+          <td class="num">{{ g.store_count }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  {% else %}
+    <p>Нічого не знайдено. Змініть запит або послабте фільтри.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}
